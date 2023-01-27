@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 @Entity()
 export class Commande {
+  //  Mise en place des differentes colonne et de leur typage
   @PrimaryGeneratedColumn()
   id?: string;
 
@@ -77,8 +78,9 @@ export class Commande {
     type: 'boolean',
   })
   send: boolean;
+  // Mise en place des jointures avec les differents tables
   @ManyToOne(() => User, (user) => user.commande, {
-    eager: true,
+    eager: false,
   })
   user!: User[];
   @OneToMany(() => Panier, (panier) => panier.commande, {

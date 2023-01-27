@@ -97,7 +97,7 @@ export class User {
   })
   favoris: Favoris[];
   @OneToMany(() => Commande, (commande) => commande.user, {
-    eager: false,
+    eager: true,
   })
   commande!: Commande[];
   @OneToMany(() => Rating, (rating) => rating.user, {

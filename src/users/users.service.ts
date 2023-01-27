@@ -24,14 +24,14 @@ export class UsersService {
   async create(createUserDto: CreateUserDto) {
     try {
       //  verification de la presence d'un role user dans la table role pour l'attribué a un "const"
-      try {
-        const roleUser = await this.roleRepository.findOneBy({
-          role: 'user',
-        });
-        console.log('valeur de roleUser', roleUser);
-      } catch (error) {
-        console.log('affichage de error', error);
-        throw new NotFoundException('aucun user dans la table role');
+      const roleUser = await this.roleRepository.findOneBy({
+        role: 'user',
+      });
+      console.log('valeur de roleUser', roleUser);
+      if (roleUser === null) {
+        throw new NotFoundException(
+          'roleUser = null merci de verifier la table role',
+        );
       }
       // nous recuperons toutes les informations rentré par l'utilisateur via le DTO
       const userCreate = await this.userRepository.save(createUserDto);
@@ -47,6 +47,12 @@ export class UsersService {
       const hash = await bcrypt.hash(password, saltOrRounds);
       //  verification du mot de passe crypté
       console.log('hash: ', hash);
+      // attribution du role au user
+      userCreate.role = roleUser;
+      //  verification afin d'etre sur que l'utilisateur créer est un user
+      if (userCreate.role.role !== 'user') {
+        throw new NotFoundException(`Pas un user !!!`);
+      }
       // attribution du mot de passe crypté au mot de passe dans le DTO
       userCreate.password = hash;
       // verification de la valeur
@@ -69,12 +75,66 @@ export class UsersService {
     return await this.userRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(id: string) {
+    const userFound = await this.userRepository.findOneBy({ id: id });
+    if (!userFound) {
+      throw new NotFoundException(`Pas d'utilisateurs avec l'id : ${id}`);
+    }
+    return userFound;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    const userUpdate = await this.findOne(id);
+    // verification de chacune des valeurs et si celle-ci n est pas undefined on lui attribut celle du DTO
+    if (userUpdate.lastname !== undefined) {
+      userUpdate.lastname = updateUserDto.lastname;
+    }
+    if (userUpdate.birthday !== undefined) {
+      userUpdate.birthday = updateUserDto.birthday;
+    }
+    if (userUpdate.email !== undefined) {
+      userUpdate.email = updateUserDto.email;
+    }
+    if (userUpdate.gender !== undefined) {
+      userUpdate.gender = updateUserDto.gender;
+    }
+    if (userUpdate.gender !== undefined) {
+      console.log('userUpdate.gender: ', userUpdate.gender);
+      userUpdate.gender = updateUserDto.gender;
+    }
+    if (userUpdate.firstname !== undefined) {
+      userUpdate.firstname = updateUserDto.firstname;
+    }
+    if (updateUserDto.password !== undefined) {
+      // recuperation du nouveau et hachage de celui-ci
+      console.log('updateUserDto.password: ', updateUserDto.password);
+      const saltOrRounds = 10;
+      const password = updateUserDto.password;
+      console.log('password: ', password);
+
+      const hash = await bcrypt.hash(password, saltOrRounds);
+      console.log('hash: ', hash);
+      userUpdate.password = hash;
+      console.log('user create password: ', userUpdate.password);
+      console.log('user dto password: ', updateUserDto.password);
+    }
+    if (userUpdate.departement !== undefined) {
+      userUpdate.departement = updateUserDto.departement;
+    }
+
+    if (userUpdate.country !== undefined) {
+      userUpdate.country = userUpdate.country;
+    }
+    if (userUpdate.town !== undefined) {
+      userUpdate.town = updateUserDto.town;
+    }
+    if (userUpdate.phone !== undefined) {
+      userUpdate.phone = updateUserDto.phone;
+    }
+    if (userUpdate.address !== undefined) {
+      userUpdate.address = updateUserDto.address;
+    }
+    return await this.userRepository.save(userUpdate);
   }
 
   remove(id: number) {
