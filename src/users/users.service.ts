@@ -21,7 +21,7 @@ export class UsersService {
     @InjectRepository(Role)
     private roleRepository: Repository<Role>,
   ) {}
-  async create(createUserDto: CreateUserDto) {
+  async create(createUserDto: CreateUserDto): Promise<User> {
     try {
       //  verification de la presence d'un role user dans la table role pour l'attribué a un "const"
       const roleUser = await this.roleRepository.findOneBy({
@@ -71,11 +71,11 @@ export class UsersService {
     }
   }
 
-  async findAll() {
+  async findAll(): Promise<User[]> {
     return await this.userRepository.find();
   }
 
-  async findOne(id: string) {
+  async findOne(id: string): Promise<User> {
     const userFound = await this.userRepository.findOneBy({ id: id });
     if (!userFound) {
       throw new NotFoundException(`Pas d'utilisateurs avec l'id : ${id}`);
@@ -83,7 +83,7 @@ export class UsersService {
     return userFound;
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto) {
+  async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
     const userUpdate = await this.findOne(id);
     // verification de chacune des valeurs et si celle-ci n est pas undefined on lui attribut celle du DTO
     if (userUpdate.lastname !== undefined) {
@@ -137,7 +137,11 @@ export class UsersService {
     return await this.userRepository.save(userUpdate);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: string): Promise<string> {
+    const result = await this.userRepository.delete({ id });
+    if (result.affected === 0) {
+      throw new NotFoundException(`Pas d'utilisateurs avec l'id : ${id}`);
+    }
+    return `Vous venez de supprimer l'utilisateur possédant l'id: ${id}`;
   }
 }

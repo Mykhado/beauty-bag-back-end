@@ -4,6 +4,6 @@ import { PanierController } from './panier.controller';
 
 @Module({
   controllers: [PanierController],
-  providers: [PanierService]
+  providers: [PanierService],
 })
 export class PanierModule {}
