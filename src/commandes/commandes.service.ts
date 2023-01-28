@@ -63,6 +63,9 @@ export class CommandesService {
     if (updateCommande.orderNumber !== undefined) {
       updateCommande.orderNumber = updateCommandeDto.orderNumber;
     }
+    if (updateCommande.send !== undefined) {
+      updateCommande.send = updateCommandeDto.send;
+    }
 
     return await this.commandeRepository.save(updateCommande);
   }

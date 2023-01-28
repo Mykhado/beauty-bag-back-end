@@ -8,4 +8,5 @@ export class CreateCommandeDto {
   townDelivery: string;
   phoneDelivery: string;
   orderNumber: string;
+  send: boolean;
 }

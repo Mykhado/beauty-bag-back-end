@@ -11,4 +11,5 @@ export class UpdateCommandeDto extends PartialType(CreateCommandeDto) {
   townDelivery: string;
   phoneDelivery: string;
   orderNumber: string;
+  send: boolean;
 }
