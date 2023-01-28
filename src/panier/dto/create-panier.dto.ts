@@ -1,1 +1,3 @@
-export class CreatePanierDto {}
+export class CreatePanierDto {
+  quantity: number;
+}

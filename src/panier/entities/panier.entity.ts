@@ -11,7 +11,7 @@ import { Product } from 'src/products/entities/product.entity';
 export class Panier {
   @PrimaryGeneratedColumn()
   id?: string;
-  rateGlobal: number;
+
   @Column({
     nullable: false,
     type: 'int',

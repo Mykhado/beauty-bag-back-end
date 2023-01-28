@@ -1,1 +1,3 @@
-export class CreateRatingDto {}
+export class CreateRatingDto {
+  rate: number;
+}
