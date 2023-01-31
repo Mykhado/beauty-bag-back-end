@@ -22,12 +22,12 @@ export class PanierController {
   constructor(private readonly panierService: PanierService) {}
 
   @Post()
-  create(@Body() createPanierDto: CreatePanierDto, @GetUser() user: User) {
+  create(@Body() createPanierDto: CreatePanierDto, @GetUser() users: User) {
     if (createPanierDto) {
-      return this.panierService.create(createPanierDto, user);
+      return this.panierService.create(createPanierDto, users);
     } else {
-      console.log('user id', user);
-      console.log('DTO commandes', createPanierDto);
+      console.log('user id', users);
+      console.log('DTO panier', createPanierDto);
 
       throw new BadRequestException(
         `Veuillez remplir tous les champs correctement !`,
@@ -36,22 +36,22 @@ export class PanierController {
   }
 
   @Get()
-  findAll() {
-    return this.panierService.findAll();
+  findAll(@GetUser() users: User) {
+    return this.panierService.findAll(users);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.panierService.findOne(id);
+  findOne(@Param('id') id: string, @GetUser() users: User) {
+    return this.panierService.findOne(id, users);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePanierDto: UpdatePanierDto) {
-    return this.panierService.update(id, updatePanierDto);
-  }
+  // @Patch(':id')
+  // update(@Param('id') id: string, @Body() updatePanierDto: UpdatePanierDto) {
+  //   return this.panierService.update(id, updatePanierDto);
+  // }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.panierService.remove(id);
+  remove(@Param('id') id: string, @GetUser() users: User) {
+    return this.panierService.remove(id, users);
   }
 }

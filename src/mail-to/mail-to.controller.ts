@@ -6,10 +6,14 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { MailToService } from './mail-to.service';
 import { CreateMailToDto } from './dto/create-mail-to.dto';
 import { UpdateMailToDto } from './dto/update-mail-to.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { User } from 'src/users/entities/user.entity';
+import { GetUser } from 'src/auth/get-user.decorator';
 
 @Controller('mail-to')
 export class MailToController {

@@ -14,7 +14,7 @@ export class Favoris {
   @ManyToOne(() => User, (user) => user.favoris, {})
   user!: User;
   @ManyToOne(() => Product, (product) => product.favoris, {
-    eager: false,
+    eager: true,
   })
-  product!: Product[];
+  product!: Product;
 }

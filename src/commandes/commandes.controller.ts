@@ -25,7 +25,7 @@ export class CommandesController {
   @Post()
   createCommande(
     @Body() createCommandeDto: CreateCommandeDto,
-    @GetUser() user: User,
+    @GetUser() users: User,
   ) {
     // verifictation que tout les champs soient remplies afin de gerer l'erreur
     if (
@@ -40,9 +40,9 @@ export class CommandesController {
       // send par defaut sur false mais on verifie l'inverse de cette valeur pour que la condition soit vraie et autorise le create
       !createCommandeDto.send
     ) {
-      return this.commandesService.create(createCommandeDto, user);
+      return this.commandesService.create(createCommandeDto, users);
     } else {
-      console.log('user id', user);
+      console.log('user id', users);
       console.log('DTO commandes', createCommandeDto);
       throw new BadRequestException(
         `Veuillez remplir tous les champs correctement !`,
@@ -51,25 +51,26 @@ export class CommandesController {
   }
 
   @Get()
-  findAll() {
-    return this.commandesService.findAll();
+  findAll(@GetUser() users: User) {
+    return this.commandesService.findAll(users);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: number) {
-    return this.commandesService.findOne(id);
+  findOne(@Param('id') id: number, @GetUser() users: User) {
+    return this.commandesService.findOne(id, users);
   }
 
   @Patch(':id')
   update(
     @Param('id') id: number,
     @Body() updateCommandeDto: UpdateCommandeDto,
+    @GetUser() users: User,
   ) {
-    return this.commandesService.update(id, updateCommandeDto);
+    return this.commandesService.update(id, updateCommandeDto, users);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.commandesService.remove(id);
+  remove(@Param('id') id: string, @GetUser() users: User) {
+    return this.commandesService.remove(id, users);
   }
 }

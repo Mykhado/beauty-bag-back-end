@@ -7,8 +7,6 @@ import { Commande } from './entities/commande.entity';
 import { User } from '../users/entities/user.entity';
 import { Panier } from 'src/panier/entities/panier.entity';
 import { ProduitsCommande } from '../produits-commande/entities/produits-commande.entity';
-import { runInThisContext } from 'vm';
-import { CreateProduitsCommandeDto } from '../produits-commande/dto/create-produits-commande.dto';
 
 @Injectable()
 export class CommandesService {
@@ -59,23 +57,40 @@ export class CommandesService {
     return 'Commande validée';
   }
 
-  async findAll(): Promise<Commande[]> {
-    return await this.commandeRepository.find();
+  async findAll(users: User): Promise<Commande[]> {
+    const queryAllCommande = this.commandeRepository.createQueryBuilder();
+    queryAllCommande.where({ user: users });
+    return queryAllCommande.getMany();
   }
 
-  async findOne(id: number): Promise<Commande> {
-    const commandeFound = await this.commandeRepository.findOneBy({ id: id });
-    if (!commandeFound) {
+  async findOne(id: number, users: User): Promise<Commande> {
+    const queryCommandeById =
+      await this.commandeRepository.createQueryBuilder();
+    queryCommandeById.where({ id: id }).andWhere({ user: users });
+    const found = await queryCommandeById.getOne();
+    console.log(found);
+    if (!found) {
       throw new NotFoundException(`Pas de commande avec l'id: ${id}`);
+    } else {
+      return found;
     }
-    return commandeFound;
   }
 
   async update(
     id: number,
     updateCommandeDto: UpdateCommandeDto,
+    users: User,
   ): Promise<Commande> {
-    const updateCommande = await this.findOne(id);
+    const queryUpdateCommande = this.commandeRepository.createQueryBuilder();
+    queryUpdateCommande.where({ id: id }).andWhere({ user: users });
+    const patch = await queryUpdateCommande.getOne();
+    console.log(!patch);
+    if (!queryUpdateCommande) {
+      throw new NotFoundException(
+        `Pas de commande modifiable avec l'id: ${id}`,
+      );
+    }
+    const updateCommande = await this.findOne(id, users);
     if (updateCommande.orderNumber !== undefined) {
       updateCommande.orderNumber = updateCommandeDto.orderNumber;
     }
@@ -112,11 +127,16 @@ export class CommandesService {
     return await this.commandeRepository.save(updateCommande);
   }
 
-  async remove(id: string) {
-    const result = await this.commandeRepository.delete(id);
-    if (result.affected === 0) {
+  async remove(id: string, users: User): Promise<string> {
+    const queryDeleteCommandeById =
+      await this.commandeRepository.createQueryBuilder();
+    queryDeleteCommandeById.where({ id: id }).andWhere({ user: users });
+    const found = await queryDeleteCommandeById.getOne();
+    if (!found) {
       throw new NotFoundException(`Pas de commande avec l'id: ${id}`);
+    } else {
+      await this.commandeRepository.delete(+id);
+      return `commande avec l'id: ${id} supprimé`;
     }
-    return `la commande à l'id: ${id} a été supprimée!`;
   }
 }

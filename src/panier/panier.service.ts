@@ -26,32 +26,47 @@ export class PanierService {
     return await this.panierRepository.save(newPanier);
   }
 
-  async findAll(): Promise<Panier[]> {
-    return await this.panierRepository.find();
+  async findAll(users: User): Promise<Panier[]> {
+    const queryAllPanier = this.panierRepository.createQueryBuilder();
+    queryAllPanier.where({ user: users });
+    return queryAllPanier.getMany();
   }
 
-  async findOne(id: string): Promise<Panier> {
-    const panierFound = await this.panierRepository.findOneBy({ id: id });
-    if (!panierFound) {
-      throw new NotFoundException(`Pas de rôles avec l'id: ${id}`);
-    }
-    return panierFound;
-  }
-
-  async update(id: string, updatePanierDto: UpdatePanierDto): Promise<Panier> {
-    const updatepanier = await this.findOne(id);
-    if (updatepanier.quantity !== undefined) {
-      updatepanier.quantity = updatePanierDto.quantity;
-    }
-
-    return await this.panierRepository.save(updatepanier);
-  }
-
-  async remove(id: string) {
-    const result = await this.panierRepository.delete({ id });
-    if (result.affected === 0) {
+  async findOne(id: string, users: User): Promise<Panier> {
+    const queryPanierById = await this.panierRepository.createQueryBuilder();
+    queryPanierById.where({ id: id }).andWhere({ user: users });
+    const found = await queryPanierById.getOne();
+    console.log(found);
+    if (!found) {
       throw new NotFoundException(`Pas de panier avec l'id: ${id}`);
+    } else {
+      return found;
     }
-    return `le panier à l'id: ${id} a été supprimée!`;
+  }
+
+  // async update(
+  //   id: string,
+  //   updatePanierDto: UpdatePanierDto,
+  //   users: User,
+  // ): Promise<Panier> {
+  //   const updatepanier = await this.findOne(id);
+  //   if (updatepanier.quantity !== undefined) {
+  //     updatepanier.quantity = updatePanierDto.quantity;
+  //   }
+
+  //   return await this.panierRepository.save(updatepanier);
+  // }
+
+  async remove(id: string, users: User) {
+    const queryDeletePanierById =
+      await this.panierRepository.createQueryBuilder();
+    queryDeletePanierById.where({ id: id }).andWhere({ users: users });
+    const found = await queryDeletePanierById.getOne();
+    if (!found) {
+      throw new NotFoundException(`Pas de panier avec l'id: ${id}`);
+    } else {
+      await this.panierRepository.delete(+id);
+      return `panier avec l'id: ${id} supprimé`;
+    }
   }
 }
