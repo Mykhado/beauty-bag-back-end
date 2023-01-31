@@ -17,7 +17,7 @@ export class MailTo {
   message: string;
 
   @ManyToOne(() => Commande, (commande) => commande.mailTo, {
-    eager: true,
+    eager: false,
   })
   commande!: Commande[];
 }

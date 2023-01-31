@@ -9,6 +9,7 @@ import { ProduitsCommande } from '../produits-commande/entities/produits-command
 
 @Module({
   imports: [
+    // imports des different modules que nous pourrons injecter dans notre service par la suite pour utilisation
     TypeOrmModule.forFeature([Commande, Panier, ProduitsCommande]),
     AuthModule,
   ],

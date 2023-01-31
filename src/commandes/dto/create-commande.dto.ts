@@ -11,6 +11,5 @@ export class CreateCommandeDto {
   townDelivery: string;
   phoneDelivery: string;
   send: boolean;
-  date: Date;
   user?: User;
 }

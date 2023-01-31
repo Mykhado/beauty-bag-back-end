@@ -20,6 +20,7 @@ export class Commande {
     nullable: false,
     type: 'varchar',
     length: 150,
+    unique: true,
   })
   orderNumber: string;
   @Column({
@@ -93,6 +94,6 @@ export class Commande {
     },
   )
   produitsCommande!: ProduitsCommande;
-  @OneToMany(() => MailTo, (mailTo) => mailTo.commande, {})
+  @OneToMany(() => MailTo, (mailTo) => mailTo.commande, { eager: true })
   mailTo!: MailTo;
 }

@@ -7,10 +7,13 @@ import { Commande } from './entities/commande.entity';
 import { User } from '../users/entities/user.entity';
 import { Panier } from 'src/panier/entities/panier.entity';
 import { ProduitsCommande } from '../produits-commande/entities/produits-commande.entity';
+import { runInThisContext } from 'vm';
+import { CreateProduitsCommandeDto } from '../produits-commande/dto/create-produits-commande.dto';
 
 @Injectable()
 export class CommandesService {
   constructor(
+    // injection des different repository afin de pouvoir tavailler sur les table necessaire en fonction de nos besoin
     @InjectRepository(Commande)
     private commandeRepository: Repository<Commande>,
     @InjectRepository(ProduitsCommande)
@@ -20,25 +23,40 @@ export class CommandesService {
   ) {}
   async create(
     createCommandeDto: CreateCommandeDto,
+    // utilisation du user via le @GetUser afin de rattacher cette commande a celui qui est connecté
     users: User,
-  ): Promise<Commande> {
-    const recupPanier = await this.panierRepository.find();
-    // recupPanier.map(async (x) => await this.produitsCommandeRepository.save(x));
-
-    // console.log(
-    //   'produits commande apres map sauvegarde',
-    //   this.produitsCommandeRepository,
-    // );
-
+  ): Promise<string> {
+    // stockage de l'Id de l'utilisateur dans un objet grace aux de users
     const user = {
       id: users.id,
-      panier: users.panier,
     };
-    console.log('verification user', user);
+    // recuperation du panier de l'utilisateur connecté
+    const userPanier = users.panier;
+    console.log('user panier ', userPanier);
 
-    const newCommande = { ...createCommandeDto, user };
-    console.log('newCommande');
-    return await this.commandeRepository.save(newCommande);
+    //  creation de la commande en amont afin de pouvoir un rattacher les produits commandé
+    const userCommande = { ...createCommandeDto, user };
+    const newCommande = await this.commandeRepository.save(userCommande);
+    // injection 1 par 1 via le map des produit du panier dans produit commandé et suppression par la suite de cet element du panier user
+    userPanier.map(async (panierProduct) => {
+      const commande = {
+        id: newCommande.id,
+      };
+      const newProduitCommande = { ...panierProduct, commande };
+      await this.produitsCommandeRepository.save(newProduitCommande);
+      const deleteProductPanier = await this.panierRepository.delete(
+        panierProduct.id,
+      );
+      if (deleteProductPanier.affected === 0) {
+        throw new NotFoundException(
+          `Pas de produit dans le panier  avec l'id: ${panierProduct.id}`,
+        );
+      } else {
+        console.log(`produit ${panierProduct.product.id} du panier supprimmé `);
+      }
+    });
+
+    return 'Commande validée';
   }
 
   async findAll(): Promise<Commande[]> {
