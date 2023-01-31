@@ -5,11 +5,12 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  Timestamp,
 } from 'typeorm';
 import { Product } from 'src/products/entities/product.entity';
-import { User } from '../../users/entities/user.entity';
+import { time } from 'console';
 @Entity()
-export class Panier {
+export class ProduitsCommande {
   @PrimaryGeneratedColumn()
   id?: string;
 
@@ -20,10 +21,14 @@ export class Panier {
   })
   quantity: number;
 
-  @ManyToOne(() => User, (user) => user.panier, {})
-  user!: User;
-  @ManyToOne(() => Product, (product) => product.panier, {
+  @ManyToOne(() => Commande, (commande) => commande.produitsCommande, {
+    onDelete: 'CASCADE',
+  })
+  commande?: Commande;
+
+  @ManyToOne(() => Product, (product) => product.produitsCommande, {
     eager: true,
+    onDelete: 'CASCADE',
   })
   product!: Product;
 }

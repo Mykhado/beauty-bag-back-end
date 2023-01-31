@@ -1,8 +1,10 @@
 import { MailTo } from 'src/mail-to/entities/mail-to.entity';
 import { Panier } from 'src/panier/entities/panier.entity';
 import { User } from 'src/users/entities/user.entity';
+import { ProduitsCommande } from '../../produits-commande/entities/produits-commande.entity';
 import {
   Column,
+  CreateDateColumn,
   Entity,
   ManyToOne,
   OneToMany,
@@ -12,7 +14,7 @@ import {
 export class Commande {
   //  Mise en place des differentes colonne et de leur typage
   @PrimaryGeneratedColumn()
-  id?: string;
+  id?: number;
 
   @Column({
     nullable: false,
@@ -34,7 +36,7 @@ export class Commande {
   })
   firstnameDelivery: string;
 
-  @Column({
+  @CreateDateColumn({
     type: 'timestamptz',
   })
   date!: Date;
@@ -82,11 +84,15 @@ export class Commande {
   @ManyToOne(() => User, (user) => user.commande, {
     eager: false,
   })
-  user!: User[];
-  @OneToMany(() => Panier, (panier) => panier.commande, {
-    eager: true,
-  })
-  panier!: Panier[];
+  user!: User;
+  @OneToMany(
+    () => ProduitsCommande,
+    (produitCommande) => produitCommande.commande,
+    {
+      eager: true,
+    },
+  )
+  produitsCommande!: ProduitsCommande;
   @OneToMany(() => MailTo, (mailTo) => mailTo.commande, {})
   mailTo!: MailTo;
 }

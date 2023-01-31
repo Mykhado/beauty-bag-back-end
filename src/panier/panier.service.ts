@@ -1,18 +1,29 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
 import { CreatePanierDto } from './dto/create-panier.dto';
 import { UpdatePanierDto } from './dto/update-panier.dto';
 import { Panier } from './entities/panier.entity';
+import { Product } from '../products/entities/product.entity';
 
 @Injectable()
 export class PanierService {
   constructor(
     @InjectRepository(Panier)
     private panierRepository: Repository<Panier>,
+    @InjectRepository(Product)
+    private productRepository: Repository<Product>,
   ) {}
-  async create(createPanierDto: CreatePanierDto): Promise<Panier> {
-    return await this.panierRepository.save(createPanierDto);
+
+  async create(createPanierDto: CreatePanierDto, users: User): Promise<Panier> {
+    const user = {
+      id: users.id,
+    };
+
+    const newPanier = { ...createPanierDto, user };
+    console.log('newPanier', newPanier);
+    return await this.panierRepository.save(newPanier);
   }
 
   async findAll(): Promise<Panier[]> {
@@ -41,6 +52,6 @@ export class PanierService {
     if (result.affected === 0) {
       throw new NotFoundException(`Pas de panier avec l'id: ${id}`);
     }
-    return `le panierà l'id: ${id} a été supprimée!`;
+    return `le panier à l'id: ${id} a été supprimée!`;
   }
 }

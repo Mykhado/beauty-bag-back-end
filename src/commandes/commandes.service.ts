@@ -4,22 +4,48 @@ import { Repository } from 'typeorm';
 import { CreateCommandeDto } from './dto/create-commande.dto';
 import { UpdateCommandeDto } from './dto/update-commande.dto';
 import { Commande } from './entities/commande.entity';
+import { User } from '../users/entities/user.entity';
+import { Panier } from 'src/panier/entities/panier.entity';
+import { ProduitsCommande } from '../produits-commande/entities/produits-commande.entity';
 
 @Injectable()
 export class CommandesService {
   constructor(
     @InjectRepository(Commande)
     private commandeRepository: Repository<Commande>,
+    @InjectRepository(ProduitsCommande)
+    private produitsCommandeRepository: Repository<ProduitsCommande>,
+    @InjectRepository(Panier)
+    private panierRepository: Repository<Panier>,
   ) {}
-  async create(createCommandeDto: CreateCommandeDto): Promise<Commande> {
-    return await this.commandeRepository.save(createCommandeDto);
+  async create(
+    createCommandeDto: CreateCommandeDto,
+    users: User,
+  ): Promise<Commande> {
+    const recupPanier = await this.panierRepository.find();
+    // recupPanier.map(async (x) => await this.produitsCommandeRepository.save(x));
+
+    // console.log(
+    //   'produits commande apres map sauvegarde',
+    //   this.produitsCommandeRepository,
+    // );
+
+    const user = {
+      id: users.id,
+      panier: users.panier,
+    };
+    console.log('verification user', user);
+
+    const newCommande = { ...createCommandeDto, user };
+    console.log('newCommande');
+    return await this.commandeRepository.save(newCommande);
   }
 
   async findAll(): Promise<Commande[]> {
     return await this.commandeRepository.find();
   }
 
-  async findOne(id: string): Promise<Commande> {
+  async findOne(id: number): Promise<Commande> {
     const commandeFound = await this.commandeRepository.findOneBy({ id: id });
     if (!commandeFound) {
       throw new NotFoundException(`Pas de commande avec l'id: ${id}`);
@@ -28,7 +54,7 @@ export class CommandesService {
   }
 
   async update(
-    id: string,
+    id: number,
     updateCommandeDto: UpdateCommandeDto,
   ): Promise<Commande> {
     const updateCommande = await this.findOne(id);
@@ -60,9 +86,7 @@ export class CommandesService {
     if (updateCommande.phoneDelivery !== undefined) {
       updateCommande.phoneDelivery = updateCommandeDto.phoneDelivery;
     }
-    if (updateCommande.orderNumber !== undefined) {
-      updateCommande.orderNumber = updateCommandeDto.orderNumber;
-    }
+
     if (updateCommande.send !== undefined) {
       updateCommande.send = updateCommandeDto.send;
     }
@@ -71,7 +95,7 @@ export class CommandesService {
   }
 
   async remove(id: string) {
-    const result = await this.commandeRepository.delete({ id });
+    const result = await this.commandeRepository.delete(id);
     if (result.affected === 0) {
       throw new NotFoundException(`Pas de commande avec l'id: ${id}`);
     }

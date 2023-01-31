@@ -2,6 +2,7 @@ import { Category } from 'src/category/entities/category.entity';
 import { Favoris } from 'src/favoris/entities/favoris.entity';
 import { Panier } from 'src/panier/entities/panier.entity';
 import { Rating } from 'src/rating/entities/rating.entity';
+import { ProduitsCommande } from '../../produits-commande/entities/produits-commande.entity';
 import {
   Column,
   Entity,
@@ -25,12 +26,7 @@ export class Product {
     width: 10,
   })
   unitPrice: number;
-  @Column({
-    nullable: false,
-    type: 'int',
-    width: 1,
-  })
-  rateGlobal: number;
+
   @Column({
     nullable: true,
     type: 'int',
@@ -55,4 +51,12 @@ export class Product {
     eager: true,
   })
   category!: Category;
+  @ManyToOne(
+    () => ProduitsCommande,
+    (produitsCommande) => produitsCommande.product,
+    {
+      eager: false,
+    },
+  )
+  produitsCommande!: ProduitsCommande[];
 }

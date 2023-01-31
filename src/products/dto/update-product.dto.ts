@@ -4,6 +4,5 @@ import { CreateProductDto } from './create-product.dto';
 export class UpdateProductDto extends PartialType(CreateProductDto) {
   name: string;
   unitPrice: number;
-  rateGlobal: number;
   quantityGlobal: number;
 }

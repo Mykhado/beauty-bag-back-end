@@ -38,9 +38,6 @@ export class ProductsService {
     if (updateProduct.unitPrice !== undefined) {
       updateProduct.unitPrice = updateProductDto.unitPrice;
     }
-    if (updateProduct.rateGlobal !== undefined) {
-      updateProduct.rateGlobal = updateProductDto.rateGlobal;
-    }
     if (updateProduct.quantityGlobal !== undefined) {
       updateProduct.quantityGlobal = updateProductDto.quantityGlobal;
     }

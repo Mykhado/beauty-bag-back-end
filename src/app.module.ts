@@ -22,6 +22,10 @@ import { Rating } from './rating/entities/rating.entity';
 import { Commande } from './commandes/entities/commande.entity';
 import { CategoryModule } from './category/category.module';
 import { Category } from './category/entities/category.entity';
+import { AuthModule } from './auth/auth.module';
+import { PassportModule } from '@nestjs/passport';
+import { ProduitsCommandeModule } from './produits-commande/produits-commande.module';
+import { ProduitsCommande } from './produits-commande/entities/produits-commande.entity';
 
 // dotenv.config({ path: '.env' });
 @Module({
@@ -44,6 +48,7 @@ import { Category } from './category/entities/category.entity';
         Rating,
         Commande,
         Category,
+        ProduitsCommande,
       ],
       synchronize: process.env.MODE === 'DEV' ? true : false,
       logging: false,
@@ -57,6 +62,9 @@ import { Category } from './category/entities/category.entity';
     MailToModule,
     CommandesModule,
     CategoryModule,
+    AuthModule,
+    PassportModule,
+    ProduitsCommandeModule,
   ],
   controllers: [AppController],
   providers: [AppService],

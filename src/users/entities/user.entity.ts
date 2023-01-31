@@ -1,5 +1,6 @@
 import { Commande } from 'src/commandes/entities/commande.entity';
 import { Favoris } from 'src/favoris/entities/favoris.entity';
+import { Panier } from 'src/panier/entities/panier.entity';
 import { Rating } from 'src/rating/entities/rating.entity';
 import {
   Column,
@@ -105,6 +106,11 @@ export class User {
     onDelete: 'CASCADE',
   })
   rating: Rating[];
+  @OneToMany(() => Panier, (panier) => panier.user, {
+    eager: true,
+    onDelete: 'CASCADE',
+  })
+  panier: Panier[];
   @ManyToOne(() => Role, (role) => role.user, {
     eager: true,
     onDelete: 'CASCADE',
