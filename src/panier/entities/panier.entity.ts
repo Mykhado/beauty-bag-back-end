@@ -20,7 +20,9 @@ export class Panier {
   })
   quantity: number;
 
-  @ManyToOne(() => User, (user) => user.panier, {})
+  @ManyToOne(() => User, (user) => user.panier, {
+    eager: false,
+  })
   user!: User;
   @ManyToOne(() => Product, (product) => product.panier, {
     eager: true,

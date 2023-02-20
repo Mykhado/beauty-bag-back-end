@@ -16,14 +16,20 @@ export class PanierService {
     private productRepository: Repository<Product>,
   ) {}
 
-  async create(createPanierDto: CreatePanierDto, users: User): Promise<Panier> {
+  async create(
+    createPanierDto: CreatePanierDto,
+    users: User,
+  ): Promise<Panier[]> {
     const user = {
       id: users.id,
     };
-
+    const queryAllPanier = this.panierRepository.createQueryBuilder();
+    queryAllPanier.where({ user: users });
     const newPanier = { ...createPanierDto, user };
     console.log('newPanier', newPanier);
-    return await this.panierRepository.save(newPanier);
+    await this.panierRepository.save(newPanier);
+    // affichage de tout le panier en return afin de pouvoir effectuer l affichage de celui-ci en dynamique dans le front
+    return queryAllPanier.getMany();
   }
 
   async findAll(users: User): Promise<Panier[]> {

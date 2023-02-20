@@ -24,7 +24,7 @@ export class ProduitsCommande {
   @ManyToOne(() => Commande, (commande) => commande.produitsCommande, {
     onDelete: 'CASCADE',
   })
-  commande?: Commande;
+  commande!: Commande;
 
   @ManyToOne(() => Product, (product) => product.produitsCommande, {
     eager: true,

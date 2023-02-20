@@ -3,6 +3,7 @@ import { Favoris } from 'src/favoris/entities/favoris.entity';
 import { Panier } from 'src/panier/entities/panier.entity';
 import { Rating } from 'src/rating/entities/rating.entity';
 import { ProduitsCommande } from '../../produits-commande/entities/produits-commande.entity';
+import { StatutProduct } from '../../statut-product/entities/statut-product.entity';
 import {
   Column,
   Entity,
@@ -33,6 +34,12 @@ export class Product {
     width: 10,
   })
   quantityGlobal: number;
+  @Column({
+    nullable: true,
+    type: 'int',
+    width: 1,
+  })
+  rateGlobal: number;
 
   @OneToMany(() => Favoris, (favoris) => favoris.product, {
     eager: false,
@@ -51,7 +58,12 @@ export class Product {
     eager: true,
   })
   category!: Category;
-  @ManyToOne(
+
+  @ManyToOne(() => StatutProduct, (statut) => statut.product, {
+    eager: true,
+  })
+  statut!: StatutProduct;
+  @OneToMany(
     () => ProduitsCommande,
     (produitsCommande) => produitsCommande.product,
     {

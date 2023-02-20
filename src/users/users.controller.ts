@@ -21,15 +21,15 @@ export class UsersController {
     if (
       createUserDto.firstname &&
       createUserDto.lastname &&
-      createUserDto.birthday &&
+      // createUserDto.birthday &&
       createUserDto.email &&
-      createUserDto.gender &&
-      createUserDto.departement &&
-      createUserDto.town &&
-      createUserDto.password &&
-      createUserDto.phone &&
-      createUserDto.address &&
-      createUserDto.country
+      // createUserDto.gender &&
+      // createUserDto.departement &&
+      // createUserDto.town &&
+      createUserDto.password
+      // createUserDto.phone &&
+      // createUserDto.address &&
+      // createUserDto.country
     ) {
       return this.usersService.create(createUserDto);
     } else {

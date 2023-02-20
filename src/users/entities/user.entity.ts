@@ -30,49 +30,49 @@ export class User {
   firstname: string;
 
   @Column({
-    nullable: false,
+    nullable: true,
     type: 'varchar',
     length: 20,
   })
   birthday: string;
 
   @Column({
-    nullable: false,
+    nullable: true,
     type: 'varchar',
     length: 10,
   })
   gender: string;
 
   @Column({
-    nullable: false,
+    nullable: true,
     type: 'varchar',
     length: 255,
   })
   address: string;
 
   @Column({
-    nullable: false,
+    nullable: true,
     type: 'int',
     width: 5,
   })
   departement: number;
 
   @Column({
-    nullable: false,
+    nullable: true,
     type: 'varchar',
     length: 255,
   })
   country: string;
 
   @Column({
-    nullable: false,
+    nullable: true,
     type: 'varchar',
     length: 255,
   })
   town: string;
 
   @Column({
-    nullable: false,
+    nullable: true,
     type: 'varchar',
     length: 20,
   })

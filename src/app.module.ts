@@ -26,6 +26,8 @@ import { AuthModule } from './auth/auth.module';
 import { PassportModule } from '@nestjs/passport';
 import { ProduitsCommandeModule } from './produits-commande/produits-commande.module';
 import { ProduitsCommande } from './produits-commande/entities/produits-commande.entity';
+import { StatutProductModule } from './statut-product/statut-product.module';
+import { StatutProduct } from './statut-product/entities/statut-product.entity';
 
 // dotenv.config({ path: '.env' });
 @Module({
@@ -49,6 +51,7 @@ import { ProduitsCommande } from './produits-commande/entities/produits-commande
         Commande,
         Category,
         ProduitsCommande,
+        StatutProduct,
       ],
       synchronize: process.env.MODE === 'DEV' ? true : false,
       logging: false,
@@ -65,6 +68,7 @@ import { ProduitsCommande } from './produits-commande/entities/produits-commande
     AuthModule,
     PassportModule,
     ProduitsCommandeModule,
+    StatutProductModule,
   ],
   controllers: [AppController],
   providers: [AppService],
