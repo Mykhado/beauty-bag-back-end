@@ -15,14 +15,17 @@ export class FavorisService {
   async create(
     createFavorisDto: CreateFavorisDto,
     users: User,
-  ): Promise<Favoris> {
+  ): Promise<Favoris[]> {
     const user = {
       id: users.id,
     };
+    const queryAllFavoris = this.favorisRepository.createQueryBuilder();
+    queryAllFavoris.where({ user: users });
 
     const newfavoris = { ...createFavorisDto, user };
     console.log('newPanier', newfavoris);
-    return await this.favorisRepository.save(newfavoris);
+    await this.favorisRepository.save(newfavoris);
+    return queryAllFavoris.getMany();
   }
 
   async findAll(users: User): Promise<Favoris[]> {
@@ -51,7 +54,7 @@ export class FavorisService {
   async remove(id: string, users: User): Promise<string> {
     const queryDeleteFavorisById =
       await this.favorisRepository.createQueryBuilder();
-    queryDeleteFavorisById.where({ id: id }).andWhere({ users: users });
+    queryDeleteFavorisById.where({ id: id }).andWhere({ user: users });
     const found = await queryDeleteFavorisById.getOne();
     if (!found) {
       throw new NotFoundException(`Pas de favoris avec l'id: ${id}`);

@@ -45,10 +45,14 @@ export class PanierController {
     return this.panierService.findOne(id, users);
   }
 
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updatePanierDto: UpdatePanierDto) {
-  //   return this.panierService.update(id, updatePanierDto);
-  // }
+  @Patch(':id')
+  update(
+    @Param('id') id: string,
+    @Body() updatePanierDto: UpdatePanierDto,
+    @GetUser() users: User,
+  ) {
+    return this.panierService.update(id, updatePanierDto, users);
+  }
 
   @Delete(':id')
   remove(@Param('id') id: string, @GetUser() users: User) {

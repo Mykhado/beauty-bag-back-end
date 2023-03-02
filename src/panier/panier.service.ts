@@ -14,6 +14,8 @@ export class PanierService {
     private panierRepository: Repository<Panier>,
     @InjectRepository(Product)
     private productRepository: Repository<Product>,
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
   ) {}
 
   async create(
@@ -50,29 +52,31 @@ export class PanierService {
     }
   }
 
-  // async update(
-  //   id: string,
-  //   updatePanierDto: UpdatePanierDto,
-  //   users: User,
-  // ): Promise<Panier> {
-  //   const updatepanier = await this.findOne(id);
-  //   if (updatepanier.quantity !== undefined) {
-  //     updatepanier.quantity = updatePanierDto.quantity;
-  //   }
+  async update(
+    id: string,
+    updatePanierDto: UpdatePanierDto,
+    user: User,
+  ): Promise<Panier> {
+    const updatepanier = await this.findOne(id, user);
+    if (updatepanier.quantity !== undefined) {
+      updatepanier.quantity = updatePanierDto.quantity;
+    }
 
-  //   return await this.panierRepository.save(updatepanier);
-  // }
+    return await this.panierRepository.save(updatepanier);
+  }
 
   async remove(id: string, users: User) {
     const queryDeletePanierById =
       await this.panierRepository.createQueryBuilder();
-    queryDeletePanierById.where({ id: id }).andWhere({ users: users });
+    queryDeletePanierById.where({ id: id }).andWhere({ user: users });
+    const queryAllPanierUser = this.panierRepository.createQueryBuilder();
+    queryAllPanierUser.where({ user: users });
     const found = await queryDeletePanierById.getOne();
     if (!found) {
       throw new NotFoundException(`Pas de panier avec l'id: ${id}`);
     } else {
       await this.panierRepository.delete(+id);
-      return `panier avec l'id: ${id} supprimé`;
+      return queryAllPanierUser.getMany();
     }
   }
 }
