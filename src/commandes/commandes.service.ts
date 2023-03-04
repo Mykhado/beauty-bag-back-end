@@ -98,6 +98,9 @@ export class CommandesService {
     queryAllCommande.where({ user: users });
     return queryAllCommande.getMany();
   }
+  async findAllAdmin(): Promise<Commande[]> {
+    return await this.commandeRepository.find();
+  }
 
   async findOne(id: number, users: User): Promise<Commande> {
     const queryCommandeById =

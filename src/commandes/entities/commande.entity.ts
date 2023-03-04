@@ -94,6 +94,6 @@ export class Commande {
     },
   )
   produitsCommande!: ProduitsCommande;
-  @OneToMany(() => MailTo, (mailTo) => mailTo.commande, { eager: true })
+  @OneToMany(() => MailTo, (mailTo) => mailTo.commande, { eager: false })
   mailTo!: MailTo[];
 }

@@ -54,6 +54,10 @@ export class CommandesController {
   findAll(@GetUser() users: User) {
     return this.commandesService.findAll(users);
   }
+  @Get('admin')
+  findAllAdmin() {
+    return this.commandesService.findAllAdmin();
+  }
 
   @Get(':id')
   findOne(@Param('id') id: number, @GetUser() users: User) {

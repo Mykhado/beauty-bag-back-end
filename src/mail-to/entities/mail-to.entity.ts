@@ -15,9 +15,15 @@ export class MailTo {
     type: 'text',
   })
   message: string;
+  @Column({
+    nullable: false,
+    type: 'varchar',
+    length: 255,
+  })
+  email: string;
 
   @ManyToOne(() => Commande, (commande) => commande.mailTo, {
-    eager: false,
+    eager: true,
   })
   commande!: Commande;
 }
