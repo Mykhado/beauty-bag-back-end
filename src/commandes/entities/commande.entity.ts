@@ -84,6 +84,7 @@ export class Commande {
   // Mise en place des jointures avec les differents tables
   @ManyToOne(() => User, (user) => user.commande, {
     eager: false,
+    onDelete: 'CASCADE',
   })
   user!: User;
   @OneToMany(

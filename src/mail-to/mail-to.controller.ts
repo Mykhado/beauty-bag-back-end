@@ -14,17 +14,21 @@ import { UpdateMailToDto } from './dto/update-mail-to.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { User } from 'src/users/entities/user.entity';
 import { GetUser } from 'src/auth/get-user.decorator';
+import { AdminGuard } from 'src/auth/admin.guard';
 
 @Controller('mail-to')
+@UseGuards(AuthGuard())
 export class MailToController {
   constructor(private readonly mailToService: MailToService) {}
 
   @Post()
+  @UseGuards(AuthGuard())
   create(@Body() createMailToDto: CreateMailToDto) {
     return this.mailToService.create(createMailToDto);
   }
 
   @Get()
+  @UseGuards(AuthGuard(), AdminGuard)
   findAll() {
     return this.mailToService.findAll();
   }
@@ -40,6 +44,7 @@ export class MailToController {
   }
 
   @Delete(':id')
+  @UseGuards(AuthGuard(), AdminGuard)
   remove(@Param('id') id: string) {
     return this.mailToService.remove(id);
   }

@@ -24,6 +24,7 @@ export class MailTo {
 
   @ManyToOne(() => Commande, (commande) => commande.mailTo, {
     eager: true,
+    onDelete: 'CASCADE',
   })
   commande!: Commande;
 }

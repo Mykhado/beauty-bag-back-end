@@ -11,6 +11,7 @@ import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { Role } from 'src/role/entities/role.entity';
 import { NotFoundException } from '@nestjs/common/exceptions';
+import { UpdateRoleDto } from './dto/update-role.dto';
 
 @Injectable()
 export class UsersService {
@@ -134,6 +135,18 @@ export class UsersService {
     if (userUpdate.address !== undefined) {
       userUpdate.address = updateUserDto.address;
     }
+    return await this.userRepository.save(userUpdate);
+  }
+
+  async updateRole(id: string, updateRoleDto: UpdateRoleDto): Promise<User> {
+    const userUpdate = await this.findOne(id);
+    console.log('user update', userUpdate);
+
+    if (updateRoleDto.role.id !== undefined) {
+      userUpdate.role.id = updateRoleDto.role.id;
+      // userUpdate.role.label = updateRoleDto.role.label;
+    }
+
     return await this.userRepository.save(userUpdate);
   }
 

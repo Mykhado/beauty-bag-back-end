@@ -99,6 +99,7 @@ export class User {
   favoris: Favoris[];
   @OneToMany(() => Commande, (commande) => commande.user, {
     eager: true,
+    onDelete: 'CASCADE',
   })
   commande!: Commande[];
   @OneToMany(() => Rating, (rating) => rating.user, {
